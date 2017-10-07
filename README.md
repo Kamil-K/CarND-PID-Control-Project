@@ -50,7 +50,7 @@ Final values chosen are:
 Final PID gain values and speed limit of 50 mph give car enough of stability for a smooth ride around the track and yet are fast enough so that if the lap was timed would result in a reasonable time around the track. Screenshot and a video from the ride can be seen below.
 
 ### YouTube video of the final ride
-Click [here](https://img.youtube.com/vi/b4SwUM74Jz8/0.jpg)](https://www.youtube.com/watch?v=b4SwUM74Jz8) or on the image below to go to the YouTube video)<p>
+Click [here](https://www.youtube.com/watch?v=b4SwUM74Jz8) or on the image below to go to the YouTube video)<p>
 [![Part of the track ride at 50 mph](https://img.youtube.com/vi/b4SwUM74Jz8/0.jpg)](https://www.youtube.com/watch?v=b4SwUM74Jz8)
 
 ---
