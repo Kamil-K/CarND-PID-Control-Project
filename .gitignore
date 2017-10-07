@@ -2,3 +2,6 @@
 build
 tags
 .editorconfig
+readme_local.txt
+vids
+myrun.sh

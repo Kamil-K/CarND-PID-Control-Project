@@ -4,6 +4,8 @@
 #include "PID.h"
 #include <math.h>
 
+using namespace std;
+
 // for convenience
 using json = nlohmann::json;
 
@@ -34,7 +36,40 @@ int main()
 
   PID pid;
   // TODO: Initialize the pid variable.
-
+  
+  //manual method for selecting gains, see article below:
+  //http://en.wikipedia.org/wiki/PID_controller#Manual_tuning
+  
+  //Step 1:
+  //Kp set to a value so that the car starts oscilating
+  //Ki set to 0
+  //Kd set to 0
+  //pid.Init(0.05, 0, 0);
+  
+  //Step 2:
+  //Kp set to a value so that the car starts oscilating - from previous step
+  //Ki set to a value so that it can reduce the offset of 0.44 deg in the steering angle
+  //Kd set to 0
+  //pid.Init(0.05, 0.0001, 0);	//Ki = 0.001 is set to a small value as the offset seemed negligible
+  
+  //Step 3:
+  //Kp set to a value so that the car starts oscilating - from previous step
+  //Ki set to a value so that it can reduce the offset of 0.44 deg in the steering angle - from previous step
+  //Kd set to increase until the loop is acceptably quick to reach its reference after a load disturbance
+  //pid.Init(0.05, 0.0001, 0.1);
+  //pid.Init(0.05, 0.0001, 0.5);
+  //pid.Init(0.05, 0.0001, 1);
+  //pid.Init(0.05, 0.0001, 1.5);	//gives reasonable behaviour but the proportional response Kp seems too small!
+  
+  //Step4: fine tunning of parameters
+  //pid.Init(0.1, 0.0001, 1.5);		//track completed for the first time at 20 mph
+  //pid.Init(0.15, 0.0001, 1.5);	//track completed at 30 mph
+  //pid.Init(0.15, 0.0001, 3);		//track completed at 30 mph and a bit faster
+  //pid.Init(0.15, 0.0001, 2);		//track completed at 50 mph, Kd slightly lowered due to overshoot at high speeds
+  //pid.Init(0.15, 0.0001, 2);		//track NOT completed at 100 mph - car out of the track!
+  //pid.Init(0.085, 0.0001, 1.3);	//track completed at 70 mph, but feels unstable - parameters to be tuned further or speed to be reduced
+  pid.Init(0.09, 0.0001, 1.5);		//reduced speed to 50 mph
+  
   h.onMessage([&pid](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
     // The 4 signifies a websocket message
@@ -49,22 +84,43 @@ int main()
           // j[1] is the data JSON object
           double cte = std::stod(j[1]["cte"].get<std::string>());
           double speed = std::stod(j[1]["speed"].get<std::string>());
-          double angle = std::stod(j[1]["steering_angle"].get<std::string>());
+          //double angle = std::stod(j[1]["steering_angle"].get<std::string>());
           double steer_value;
+		  double thr;
+		  double target_speed = 50;	//70, 60, 50 and 30 set previously
           /*
           * TODO: Calcuate steering value here, remember the steering value is
           * [-1, 1].
           * NOTE: Feel free to play around with the throttle and speed. Maybe use
           * another PID controller to control the speed!
           */
-          
+		  
+		  pid.UpdateError(cte);		  
+		  steer_value = pid.TotalError();
+		  
+		  if(steer_value > 1.0) {
+        	  steer_value = 1;
+          }
+		  else if(steer_value < -1.0) {
+        	  steer_value = -1;
+          }
+
+		  if (speed > target_speed) {
+			  thr = 0;
+		  }
+		  else {
+			  thr = 1.0;
+		  }
+
           // DEBUG
+		  std::cout << "Speed is: " << speed << endl;
           std::cout << "CTE: " << cte << " Steering Value: " << steer_value << std::endl;
 
           json msgJson;
           msgJson["steering_angle"] = steer_value;
-          msgJson["throttle"] = 0.3;
-          auto msg = "42[\"steer\"," + msgJson.dump() + "]";
+          //msgJson["throttle"] = 0.3;
+		  msgJson["throttle"] = thr;
+		  auto msg = "42[\"steer\"," + msgJson.dump() + "]";
           std::cout << msg << std::endl;
           ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
         }

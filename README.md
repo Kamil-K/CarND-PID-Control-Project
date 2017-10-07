@@ -1,7 +1,59 @@
+Kamil Kaczmarczyk
+06-11-2017
+
 # CarND-Controls-PID
 Self-Driving Car Engineer Nanodegree Program
 
+![alt tex](https://github.com/Kamil-K/CarND-PID-Control-Project/blob/master/pics/run60mph.JPG "Successful Run")
+
+## Introduction
+This code contains successful implementation of a PID controller for a self-driving vehicle on a race track in a Unity Simulator for a Udacity Self-Driving-Car NanoDegree.
+
+## Goal
+Goal of this project was to build and implement a PID controller, tune its hyperparameters and to verify the solution in a simulated environment with an autonomous vehicle going around a track.
+
+## IO
+
+Simulator takes in as input steering angle and throttle commands to drive the car around the track and its outputs are cross-track error (CTE) which is essentially the distance from the ideal path around the track, then there is speed and finally the steering angle.
+
+## Discussion
+
+In a PID controller stands for proportional-integral-derivative controller and as the name suggests it consists of three terms. 
+
+<i>Proportional Term Kp</i>
+This component has the highest impact on the behaviour of the controller. It is responsible for the proportional steering angle of the wheels of the car to the distance from the center lane or an ideal drive path. In this particular project this distance is called cross-track error or CTE. Example of this is if a car is slightly to the right of the center then it will turn left towards the center position proportionally strong with the distance to this center.
+
+<i>Integral Term Ki</i>
+This component is responsible for getting rid of the bias in the control. Example of a bias can be in the shape of a drift such as a steering drift.
+
+<i>Derivative Term Kd</i>
+This differential term is responsible for reducing the overshooting effect caused by the proportional term. Term takes into account the difference of cross-tract-error CTE from the current step and previous one so that the closer the car is to the center line the smaller this coefficient gets. This can be thought of as a damping coefficient. Example of that is when the car is to the right from the center and it starts turning left then in a traditional P or P-I controller it would overshoot it and start oscilating around the middle. in a P-D or P-I-D controller this term supports the damping and faster convergence towards the center line by decreasing the overshoot.
+
+## Parameters Tunning
+
+There are several approaches to PID gains tunning ranging from manual methodologies, Ziegler–Nichols going towards more effective and yet simple ones such as Twiddle where parameters are optimized based on the best error obtained.
+
+In this work manual setting of PID gains is used. It follows few steps:
+
+- Step 1: Select Kp so that the vehicle starts oscilating around the center line. At the same time keep Ki and Kd at 0s.
+- Step 2: Keep selected Kp, keep Kd at 0 and start playing with Ki to minimize the drift caused by the steering angle (here the drift was around 0.44 deg)
+- Step 3: Keep Kp and Ki preselected before and find Kd so that it dumps the overshoot and yet proposes a high enough reaction to having higher CTE values.
+- Step 4: Final finetunning also including the speed target. In this work final speed target of 50 mph was used and the Kp, and Kd parameters needed to be slightly modified to account for better stability and smoother ride.
+
+Final values chosen are:
+- Kp = 0.09
+- Ki = 0.0001
+- Kd = 1.5
+
+## Final Results
+
+Final PID gain values and speed limit of 50 mph give car enough of stability for a smooth ride around the track and yet are fast enough so that if the lap was timed would result in a reasonable time around the track. Screenshot and a video from the ride can be seen below.
+
+[![Part of the track ride at 50 mph](https://img.youtube.com/vi/b4SwUM74Jz8/0.jpg)](https://www.youtube.com/watch?v=b4SwUM74Jz8)
+
 ---
+
+# Original README from UDACITY
 
 ## Dependencies
 
