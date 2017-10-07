@@ -20,13 +20,13 @@ Simulator takes in as input steering angle and throttle commands to drive the ca
 
 In a PID controller stands for proportional-integral-derivative controller and as the name suggests it consists of three terms. 
 
-<i>Proportional Term Kp</i>
+<i>Proportional Term Kp</i><p>
 This component has the highest impact on the behaviour of the controller. It is responsible for the proportional steering angle of the wheels of the car to the distance from the center lane or an ideal drive path. In this particular project this distance is called cross-track error or CTE. Example of this is if a car is slightly to the right of the center then it will turn left towards the center position proportionally strong with the distance to this center.
 
-<i>Integral Term Ki</i>
+<i>Integral Term Ki</i><p>
 This component is responsible for getting rid of the bias in the control. Example of a bias can be in the shape of a drift such as a steering drift.
 
-<i>Derivative Term Kd</i>
+<i>Derivative Term Kd</i><p>
 This differential term is responsible for reducing the overshooting effect caused by the proportional term. Term takes into account the difference of cross-tract-error CTE from the current step and previous one so that the closer the car is to the center line the smaller this coefficient gets. This can be thought of as a damping coefficient. Example of that is when the car is to the right from the center and it starts turning left then in a traditional P or P-I controller it would overshoot it and start oscilating around the middle. in a P-D or P-I-D controller this term supports the damping and faster convergence towards the center line by decreasing the overshoot.
 
 ## Parameters Tunning
@@ -49,6 +49,7 @@ Final values chosen are:
 
 Final PID gain values and speed limit of 50 mph give car enough of stability for a smooth ride around the track and yet are fast enough so that if the lap was timed would result in a reasonable time around the track. Screenshot and a video from the ride can be seen below.
 
+YouTube video of the final ride <b>(click on the image to go to YouTube)</b>
 [![Part of the track ride at 50 mph](https://img.youtube.com/vi/b4SwUM74Jz8/0.jpg)](https://www.youtube.com/watch?v=b4SwUM74Jz8)
 
 ---
